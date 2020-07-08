@@ -1,5 +1,4 @@
 <template>
-<q-page>
 <div class="row justify-center full-width q-mt-md">
       <div class="col-lg-3 col-xs-10" >
        	<div class="title-font">ROOM CODE</div>
@@ -23,7 +22,6 @@
     	/>
           </div>
 </div>
-</q-page>
 </template>
 
 <script>
@@ -41,7 +39,7 @@ export default {
       		this.$refs.code.validate()
 
       		if (!this.$refs.username.hasError && !this.$refs.code.hasError) {
-      		   console.log(this.code)
+      		    console.log(this.code)
 				console.log(this.username) 
       		}
 
@@ -53,6 +51,7 @@ export default {
 
 
 <style lang="stylus">
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Fira+Sans:wght@900&display=swap');
   .title-font
     font-family: 'Fira Sans', sans-serif;
     color: #333

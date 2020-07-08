@@ -108,6 +108,8 @@ export default {
 </script>
 
 <style lang="stylus">
+@import url('https://fonts.googleapis.com/css2?family=Bangers&display=swap');
+
   .snackbox-font
     font-family: 'Bangers', cursive;
     font-size: 30 px
