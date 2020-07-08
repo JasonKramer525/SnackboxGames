@@ -2,6 +2,12 @@
   <q-layout view="lHh Lpr lFf">
     <q-header elevated>
       <q-toolbar>
+      <q-btn 
+          class="" v-if="$route.fullPath.includes('/play')" 
+          icon="arrow_back" label="Leave" flat dense @click="logoutUser"/>
+        <!-- 
+        
+
         <q-btn
           flat
           dense
@@ -9,10 +15,13 @@
           icon="menu"
           aria-label="Menu"
           @click="leftDrawerOpen = !leftDrawerOpen"
-        />
+        /> ----->
 
-        <q-toolbar-title class="absolute-center snackbox-font">
+        <q-toolbar-title class="absolute-center snackbox-font" v-if="$route.fullPath == '/'">
           snackbox.live
+        </q-toolbar-title>
+        <q-toolbar-title class="absolute-center snackbox-font" v-if="$route.fullPath == '/play'">
+          {{userDetails.name}}
         </q-toolbar-title>
 
       </q-toolbar>
@@ -47,6 +56,7 @@
 
 <script>
 import EssentialLink from 'components/EssentialLink.vue'
+import {mapState, mapActions} from 'vuex'
 
 export default {
   name: 'MainLayout',
@@ -54,6 +64,13 @@ export default {
   components: {
     EssentialLink
   },
+  computed: {
+    ...mapState('store', ['messages', 'userDetails']),
+  },
+  methods: {
+    ...mapActions('store',['logoutUser']),
+  },
+
 
   data () {
     return {

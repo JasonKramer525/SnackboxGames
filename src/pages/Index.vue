@@ -2,10 +2,10 @@
 <div class="row justify-center full-width q-mt-md">
       <div class="col-lg-3 col-xs-10" >
        	<div class="title-font">ROOM CODE</div>
-       			<q-input class="input-font" filled mask="AAAA" v-model="code" placeholder="ENTER 4-LETTER CODE" lazy-rules
+       			<q-input class="input-font" filled mask="AAAA" v-model="formData.code" placeholder="ENTER 4-LETTER CODE" lazy-rules
         		:rules="[ val => val && val.length == 4 || 'Please enter a 4 character room code']" ref="code"/>
        	<div class="q-mt-md title-font" >NAME</div>
-       			<q-input class="input-font" mask="XXXXXXXXXX" filled v-model="username" placeholder="ENTER YOUR NAME" 
+       			<q-input class="input-font" mask="XXXXXXXXXX" filled v-model="formData.username" placeholder="ENTER YOUR NAME" 
        			lazy-rules  ref="username"
         		:rules="[ val => val && val.length > 0  || 'Please enter a username']"
        			/>
@@ -25,22 +25,28 @@
 </template>
 
 <script>
+	import {mapActions} from 'vuex'
+
 export default {
 	name: 'PageIndex',
 	data () {
 		return {
-  			code: '',
-  			username: ''
+			formData: {
+		  		code: '',
+		  		username: ''
+	  		}
 		}
 	},
 	methods: {
+		...mapActions('store',['playGame']),
 		joinGame(){
       		this.$refs.username.validate()
       		this.$refs.code.validate()
 
       		if (!this.$refs.username.hasError && !this.$refs.code.hasError) {
-      		    console.log(this.code)
-				console.log(this.username) 
+      		    console.log(this.formData.code)
+				console.log(this.formData.username) 
+				this.playGame(this.formData)
       		}
 
 			
