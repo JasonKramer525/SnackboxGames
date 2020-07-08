@@ -3,9 +3,13 @@
 <div class="row justify-center full-width q-mt-md">
       <div class="col-lg-3 col-xs-10" >
        	<div class="title-font">ROOM CODE</div>
-       			<q-input class="input-font" filled mask="AAAA" v-model="code" placeholder="ENTER 4-LETTER CODE"/>
+       			<q-input class="input-font" filled mask="AAAA" v-model="code" placeholder="ENTER 4-LETTER CODE" lazy-rules
+        		:rules="[ val => val && val.length == 4 || 'Please enter a 4 character room code']" ref="code"/>
        	<div class="q-mt-md title-font" >NAME</div>
-       			<q-input class="input-font" mask="XXXXXXXXXX" filled v-model="username" placeholder="ENTER YOUR NAME" />
+       			<q-input class="input-font" mask="XXXXXXXXXX" filled v-model="username" placeholder="ENTER YOUR NAME" 
+       			lazy-rules  ref="username"
+        		:rules="[ val => val && val.length > 0  || 'Please enter a username']"
+       			/>
        
 
 </div>
@@ -15,6 +19,7 @@
       class="q-px-xl q-py-xs q-mt-md"
       color="primary"
       label="Play"
+      @click="joinGame"
     	/>
           </div>
 </div>
@@ -28,6 +33,19 @@ export default {
 		return {
   			code: '',
   			username: ''
+		}
+	},
+	methods: {
+		joinGame(){
+      		this.$refs.username.validate()
+      		this.$refs.code.validate()
+
+      		if (!this.$refs.username.hasError && !this.$refs.code.hasError) {
+      		   console.log(this.code)
+				console.log(this.username) 
+      		}
+
+			
 		}
 	}
 }
