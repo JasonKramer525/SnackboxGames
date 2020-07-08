@@ -6,13 +6,17 @@
        			<q-input class="input-font" filled mask="AAAA" v-model="code" placeholder="ENTER 4-LETTER CODE"/>
        	<div class="q-mt-md title-font" >NAME</div>
        			<q-input class="input-font" mask="XXXXXXXXXX" filled v-model="username" placeholder="ENTER YOUR NAME" />
-      </div>
-       <q-btn
+       
+
+</div>
+<div class="row justify-center full-width q-mt-md">
+<q-btn
       size="22px"
       class="q-px-xl q-py-xs q-mt-md"
       color="primary"
       label="Play"
-    />
+    	/>
+          </div>
 </div>
 </q-page>
 </template>
