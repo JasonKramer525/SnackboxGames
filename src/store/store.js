@@ -15,6 +15,9 @@ const mutations = {
 	updateUser(state,payload){
 		Object.assign(state.users[payload.userId], payload.userDetails)
 	},
+	removeUser(state,payload){
+		Vue.delete(state.users, payload.userId, payload.userDetails)
+	},
 }
 const actions = {
 	playGame({}, payload){
@@ -31,7 +34,6 @@ const actions = {
 				    	console.log(games[payload.code])
 
 						if(games[payload.code]){
-							console.log("ALREADY EXISTS")
 							gameHost = false;
 						}
 
@@ -81,15 +83,37 @@ const actions = {
 				let userId = firebaseAuth.currentUser.uid;
 				console.log("USERID: ", userId)
 
-				firebaseDb.ref('users/' + userId).once('value', snapshot => { 
-				    	let userDetails = snapshot.val()
-				    	console.log("DETAILS: ", userDetails)
-				    	commit('setUserDetails', {
-				    		name: userDetails.name,
-				    		code: userDetails.code,
-				    		userId: userId
-				    	})
-				    }) 
+				firebaseDb.ref('users').on('value', snapshot => { 
+				    if(snapshot.hasChild(userId)){
+
+					firebaseDb.ref('users/' + userId).once('value', snapshot => { 
+					    	let userDetails = snapshot.val()
+					    	console.log("DETAILS: ", userDetails)
+					    	commit('setUserDetails', {
+					    		name: userDetails.name,
+					    		code: userDetails.code,
+					    		userId: userId,
+					    		host: userDetails.host
+					    	})
+					    
+					    }) 
+					}
+
+					else {
+						firebaseDb.ref('users/' + userId).once('child_added', snapshot => { 
+					    	let userDetails = snapshot.val()
+					    	console.log("DETAILS: ", userDetails)
+					    	commit('setUserDetails', {
+					    		name: userDetails.name,
+					    		code: userDetails.code,
+					    		userId: userId,
+					    		host: userDetails.host
+					    	})
+					    
+					    }) 
+					}
+
+				})
 
 				dispatch('firebaseGetUsers')
 
@@ -121,9 +145,21 @@ const actions = {
 				userDetails
 			})
 		})
+		firebaseDb.ref('users').on('child_removed', snapshot => {
+			let userDetails = snapshot.val()
+			let userId = snapshot.key
+			commit('removeUser', {
+				userId,
+				userDetails
+			})
+		})
 	},
 	logoutUser(){
 		var user = firebaseAuth.currentUser;
+		console.log("USER GAME: ", state.userDetails.code)
+
+		let userId = firebaseAuth.currentUser.uid;
+		firebaseDb.ref('users/' + userId).remove();
 
 		user.delete().then(function() {
 		  console.log("User Deleted")
@@ -144,7 +180,6 @@ const getters = {
 		})
 		console.log(gameUsers)
 		return gameUsers
-
 	},
 }
 
