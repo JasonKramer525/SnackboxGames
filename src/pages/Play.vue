@@ -1,13 +1,54 @@
 <template>
-<div class="row justify-center text-center full-width q-mt-md">
-    <div class="col-lg-5 col-xs-10" >
+<div class="row justify-center text-center q-mt-md">
+    <div class="col-lg-5 col-xs-10">
 		<div class="title-font" v-if="!userDetails.host" >Waiting for the host to start the game</div>
 		<div class="title-font" v-if="userDetails.host">You are the host.</div>
 		<div class="title-font">Room Code: <a style="color:#1976D2; font-size:40px"> {{userDetails.code}} </a> </div>
-		<div class="title-font q-mt-md">Current Players:</div>
+		<div class="title-font q-mt-md">Current Players:    {{ countDown }}</div>
 
 		<div style="font-size: 20px" v-for="(user, key) in users">
 		  {{ user.name }} <a v-if="user.host == true"> (Host) </a>
+		</div>
+
+
+		<q-btn-dropdown ref="gameLabel" v-if="userDetails.host" size="18px" class="q-py-xs q-mt-md" color="primary" label="Select Game">
+	      <q-list>
+	      	<q-item clickable v-close-popup @click="onItemClick()">
+	          <q-item-section>
+	            <q-item-label>Hot Potato</q-item-label>
+	          </q-item-section>
+	        </q-item>
+
+	        <q-item clickable v-close-popup @click="onItemClick()">
+	          <q-item-section>
+	            <q-item-label>Headlines</q-item-label>
+	          </q-item-section>
+	        </q-item>
+
+	        <q-item clickable v-close-popup @click="onItemClick()">
+	          <q-item-section>
+	            <q-item-label>Crack The Code</q-item-label>
+	          </q-item-section>
+	        </q-item>
+
+	        <q-item clickable v-close-popup @click="onItemClick()">
+	          <q-item-section>
+	            <q-item-label>Bounce Back</q-item-label>
+	          </q-item-section>
+	        </q-item>
+	      </q-list>
+	    </q-btn-dropdown>
+
+		<br>
+
+		<q-btn v-if="userDetails.host"
+		      size="19px"
+		      class="q-px-xl q-py-xs q-mt-md"
+		      color="primary"
+		      label="Start"
+		      @click=""
+		    	/>
+		          </div>
 		</div>
 
 	</div>
@@ -28,6 +69,37 @@ export default {
 			showMessages: false
 		}
 	},
+	methods: {
+	    onItemClick () {
+
+	    },
+	    countDownTimer() {
+            if(this.countDown > 0) {
+                setTimeout(() => {
+                    this.countDown -= 1
+                    this.countDownTimer()
+                }, 1000)
+            }
+        }
+	},
+	data() {
+        return {
+            countDown : 30
+        }
+    },
+    watch: {
+       	countDown: {
+           handler(value) {
+
+               if (value > 0) {
+                   setTimeout(() => {
+                       this.countDown--;
+                   }, 1000);
+               }
+           },
+           immediate: true // This ensures the watcher is triggered upon creation
+       }	
+	}
 }
 
 </script>
