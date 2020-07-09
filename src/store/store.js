@@ -165,8 +165,7 @@ const actions = {
 		if(host){
 			Object.keys(state.users).forEach(key => {
 				if(state.users[key].code == code && hostChanged == false){
-					console.log("NEW HOST: ", state.users[key].name)
-					console.log(key)
+					hostChanged = true;
 					dispatch('firebaseUpdateHost', {
 						userId: key,
 						updates: {
@@ -175,8 +174,12 @@ const actions = {
 					})
 				}
 			})
-		}
 
+			if(hostChanged == false){
+				firebaseDb.ref('games/' + code).remove();
+			}
+		}
+		
 		user.delete().then(function() {
 		  console.log("User Deleted")
 		}).catch(function(error) {
