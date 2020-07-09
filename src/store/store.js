@@ -154,12 +154,28 @@ const actions = {
 			})
 		})
 	},
-	logoutUser(){
+	logoutUser({dispatch}){
 		var user = firebaseAuth.currentUser;
-		console.log("USER GAME: ", state.userDetails.code)
 
 		let userId = firebaseAuth.currentUser.uid;
+		let code = state.userDetails.code;
+		let host = state.userDetails.host
+		let hostChanged = false;
 		firebaseDb.ref('users/' + userId).remove();
+		if(host){
+			Object.keys(state.users).forEach(key => {
+				if(state.users[key].code == code && hostChanged == false){
+					console.log("NEW HOST: ", state.users[key].name)
+					console.log(key)
+					dispatch('firebaseUpdateHost', {
+						userId: key,
+						updates: {
+							host: true
+						}
+					})
+				}
+			})
+		}
 
 		user.delete().then(function() {
 		  console.log("User Deleted")
@@ -168,6 +184,9 @@ const actions = {
 		});
 
 		//firebaseAuth.signOut()
+	},
+	firebaseUpdateHost({}, payload){
+		firebaseDb.ref('users/' + payload.userId).update(payload.updates)
 	},
 }
 const getters = {
