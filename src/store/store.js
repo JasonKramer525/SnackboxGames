@@ -297,15 +297,6 @@ const actions = {
 	    	dispatch('potatoGameStart')
 
         }, 7000)
-
-
-        setTimeout(() => {
-			/*let updates = {
-				gameState: "lobby"
-			}
-
-	    	firebaseDb.ref('games/' + gameId).update(updates)*/
-        }, 28000)
 		
 	},
 	potatoGameStart(){
@@ -325,11 +316,37 @@ const actions = {
 	    	firebaseDb.ref('games/' + state.userDetails.code).update(updates)
 
 	    	if(index == 27){
+	    		let loser = state.gameDetails.game.potato
+	    		let winLoss = "potatoLoss"
+	    		if(state.gameDetails.game.playerCount == 2){
+	    			winLoss = "potatoWin"
+	    		}
 	    		let updates = {
-					gameState: "potatoLoss"
+					gameState: winLoss
 				}
 
 	    		firebaseDb.ref('games/' + state.userDetails.code).update(updates)
+
+	    		updates = {
+					eliminated: "true"
+				}
+
+				let eliminated = ""
+				console.log("ELIMINATED: ", loser)
+				Object.keys(state.users).forEach(key => {
+					if(state.users[key].name == loser && state.users[key].code == state.userDetails.code){
+						eliminated = key
+					}
+				})
+
+				firebaseDb.ref('users/' + eliminated).update(updates)
+
+				updates = {
+					potato: loser
+				}
+
+		    	firebaseDb.ref('games/' + state.userDetails.code).update(updates)
+
 	    	}
 		  }, index * interval)
 		})
@@ -363,11 +380,26 @@ const actions = {
 		let updates = {
 			potato: userChange
 		}
-		console.log("PASS")
 
     	firebaseDb.ref('games/' + state.userDetails.code).update(updates)
 
-		console.log("exit", state.gameDetails.game)
+	},
+	quitPotato(){
+		let updates = {
+			eliminated: "false"
+		}
+
+		Object.keys(state.users).forEach(key => {
+			if(state.users[key].code == state.userDetails.code){
+				firebaseDb.ref('users/' + key).update(updates)
+			}
+		})
+
+		updates = {
+					gameState: "lobby"
+				}
+
+		firebaseDb.ref('games/' + state.userDetails.code).update(updates)
 	}
 }
 const getters = {

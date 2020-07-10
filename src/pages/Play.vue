@@ -86,19 +86,46 @@
 
     	    <div class="title-font q-mt-md">Players Remaining:    </div>
 
-    	    <div style="font-size: 20px" v-for="(user, key) in users">
+    	    <div style="font-size: 20px" v-for="(user, key) in users" v-if="user.eliminated == 'false'">
     	      {{ user.name }} <q-img v-if="gameDetails.game.potato == user.name"
     	      :src="url"
     	      style="height: 50px; max-width: 50px; transform:translateY(-8px)"
     	/></div>  
+		
+		          
+
 
     </div>
 </div>
 
 <div v-else-if="gameDetails.game.gameState == 'potatoLoss'" class="row justify-center text-center q-mt-md">
     <div class="col-lg-5 col-xs-10">
-    	<div class="title-font" style="font-size:50px;">{{ gameDetails.game.potato }} Lost!</div>
+    	<div class="title-font" style="font-size:50px; color:red">{{ gameDetails.game.potato }} LOST!</div>
+    	<div class="title-font" style="font-size:50px;">PLAYERS REMAINING:</div>
+    	<div class="title-font" style="font-size:30px;" v-for="(user, key) in users">
+    	     <div v-if="user.eliminated == 'false'"> {{ user.name }} </div></div>
+    	     <q-btn v-if="userDetails.host == true"
+		      size="19px"
+		      class="q-px-xl q-py-xs q-mt-md"
+		      color="primary"
+		      label="CONTINUE"
+		      @click="onStart()"
+		    	/>
  	</div>
+</div>
+
+<div v-else-if="gameDetails.game.gameState == 'potatoWin'" class="row justify-center text-center q-mt-md">
+    <div class="col-lg-5 col-xs-10">
+    	<div class="title-font" style="font-size:50px;" v-for="(user, key) in users">
+    	     <div class="absolute-center" v-if="user.eliminated == 'false'"> {{ user.name }} WINS!</div><br><br></div>
+    	     <q-btn v-if="userDetails.host == true"
+		      size="19px"
+		      class="q-px-xl q-py-xs q-mt-md"
+		      color="primary" style="margin-left: auto; margin-right: auto; display:block"
+		      label="Main Menu"
+		      @click="quitPotatoGame()"
+		    	/>
+	</div>
 </div>
 </template>
 
@@ -112,7 +139,7 @@ export default {
 		...mapGetters('store', ['users', 'gameDetails'])
 	},
 	methods: {
-		...mapActions('store',['startGame', 'passPotato']),
+		...mapActions('store',['startGame', 'passPotato', 'quitPotato']),
 	    onItemClick (x) {
 	    	this.gameLabel = x
 	    },
@@ -128,7 +155,10 @@ export default {
             }
         },
         throwPotato() {
-        	this.passPotato()
+        	return this.passPotato()
+        },
+        quitPotatoGame() {
+        	return this.quitPotato()
         }
 	},
 	data() {
