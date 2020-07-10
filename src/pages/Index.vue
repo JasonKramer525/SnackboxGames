@@ -25,7 +25,7 @@
 </template>
 
 <script>
-	import {mapActions} from 'vuex'
+	import {mapActions, mapGetters} from 'vuex'
 
 export default {
 	name: 'PageIndex',
@@ -36,6 +36,9 @@ export default {
 		  		username: ''
 	  		}
 		}
+	},
+	computed: {
+		...mapGetters('store', ['backgroundColor'])
 	},
 	methods: {
 		...mapActions('store',['playGame']),

@@ -4,7 +4,10 @@ import { firebaseAuth, firebaseDb } from 'boot/firebase'
 const state = {
 	userDetails: {},
 	users: {},
-	gameDetails: {}
+	gameDetails: {},
+	backgroundColor: {
+		backgroundColor: "#D3D3D3"
+	}
 }
 const mutations = {
 	setUserDetails(state, payload) {
@@ -254,7 +257,7 @@ const actions = {
 		//console.log("USERS IN GAME: ", count)
 
 		let timer = 6;
-		var itr = Array(9).fill(0)
+		var itr = Array(8).fill(0)
 		var interval = 1000; //one second
 		itr.forEach((itr, index) => {
 		  setTimeout(() => {
@@ -279,8 +282,16 @@ const actions = {
 			}
 
 	    	firebaseDb.ref('games/' + gameId).update(updates)
-        }, 9000)
-		
+        }, 7000)
+
+
+        setTimeout(() => {
+			let updates = {
+				gameState: "lobby"
+			}
+
+	    	firebaseDb.ref('games/' + gameId).update(updates)
+        }, 28000)
 		
 	},
 	passPotato({commit}){
@@ -332,6 +343,9 @@ const getters = {
 	},
 	gameDetails: state => {
 		return state.gameDetails
+	},
+	backgroundColor: state => {
+		return state.backgroundColor
 	}
 }
 

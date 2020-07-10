@@ -1,5 +1,5 @@
 <template>
-  <q-layout view="lHh Lpr lFf" style="background-color:#D3D3D3">
+  <q-layout view="lHh Lpr lFf" :style="backgroundColor">
     <q-header elevated>
       <q-toolbar>
       <q-btn 
@@ -56,7 +56,7 @@
 
 <script>
 import EssentialLink from 'components/EssentialLink.vue'
-import {mapState, mapActions} from 'vuex'
+import {mapState, mapActions, mapGetters} from 'vuex'
 
 export default {
   name: 'MainLayout',
@@ -65,7 +65,8 @@ export default {
     EssentialLink
   },
   computed: {
-    ...mapState('store', ['messages', 'userDetails']),
+      ...mapGetters('store', ['backgroundColor']),
+      ...mapState('store', ['messages', 'userDetails']),
   },
   methods: {
     ...mapActions('store',['logoutUser']),
@@ -74,7 +75,11 @@ export default {
 
   data () {
     return {
+      myStyle: {
+        backgroundColor:"#D3D3D3"
+      },
       leftDrawerOpen: false,
+      color: '#D3D3D3',
       essentialLinks: [
         {
           title: 'Docs',
@@ -120,7 +125,8 @@ export default {
         }
       ]
     }
-  }
+  },
+ 
 }
 </script>
 
