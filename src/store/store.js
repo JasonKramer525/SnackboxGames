@@ -314,7 +314,7 @@ const actions = {
 		'#ff7070','#ff6363','#ff5959','#ff5252','#ff4242','#ff3333','#ff2424','#ff0f0f','#ff0000',"#D3D3D3"]
 		var itr = Array(20).fill(0)
 		var counter = 0;
-		var interval = Math.floor(Math.random() * (800 - 500 + 1)) + 500;
+		var interval = Math.floor(Math.random() * (800 - 300 + 1)) + 300;
 		colors.forEach((color, index) => {
 		  setTimeout(() => {
 		  	console.log(color)
