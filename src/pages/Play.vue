@@ -120,7 +120,7 @@
     	     <div class="absolute-center" v-if="user.eliminated == 'false'"> {{ user.name }} WINS!</div><br><br></div>
     	     <q-btn v-if="userDetails.host == true"
 		      size="19px"
-		      class="q-px-xl q-py-xs q-mt-md"
+		      class="q-px-xl q-py-xs q-mt-md q-mb-md absolute-bottom"
 		      color="primary" style="margin-left: auto; margin-right: auto; display:block"
 		      label="Main Menu"
 		      @click="quitPotatoGame()"
