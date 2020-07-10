@@ -57,7 +57,12 @@
 <!------- HOT POTATO ------->
 <div v-else-if="gameDetails.game.gameState == 'Hot Potato'" class="row justify-center text-center q-mt-md">
     <div class="col-lg-5 col-xs-10">
-    	<div class="title-font">Hot Potato</div>
+    	<div class="title-font" style="font-size:50px;">Hot Potato</div>
+
+    	<q-img
+    	      :src="url"
+    	      style="height: 120px; max-width: 120px "
+    	/>
 
     	<q-circular-progress v-if="gameDetails.game.timer >= 0"
     	      show-value
@@ -69,10 +74,18 @@
     	      center-color="grey-8"
     	      track-color="transparent"
     	    >
-    	    	<div v-if="gameDetails.game.timer == 4"></div>
+    	    	<div v-if="gameDetails.game.timer > 4"></div>
     	    	<div v-else-if="gameDetails.game.timer == 0">Go!</div>
     	    	<div v-else>{{gameDetails.game.timer}}</div>
     	    </q-circular-progress>
+
+    	    <div class="title-font q-mt-md">Players Remaining:    </div>
+
+    	    <div style="font-size: 20px" v-for="(user, key) in users">
+    	      {{ user.name }} <q-img
+    	      :src="url"
+    	      style="height: 50px; max-width: 50px; transform:translateY(-8px)"
+    	/></div>  
 
     </div>
 </div>
@@ -108,7 +121,8 @@ export default {
 	data() {
         return {
             countDown: 30,
-            gameLabel: "Select Game"
+            gameLabel: "Select Game",
+            url: 'https://vignette.wikia.nocookie.net/minecraft/images/c/c2/Potato.png/revision/latest?cb=20200213034838'
         }
     },
     watch: {
