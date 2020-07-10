@@ -54,9 +54,11 @@
 	</div>
 </div>
 
-
+<!------- HOT POTATO ------->
 <div v-else-if="gameDetails.game.gameState == 'Hot Potato'" class="row justify-center text-center q-mt-md">
     <div class="col-lg-5 col-xs-10">
+    	<div class="title-font">Hot Potato</div>
+
     	<q-circular-progress v-if="gameDetails.game.timer >= 0"
     	      show-value
     	      class="text-white q-ma-md"

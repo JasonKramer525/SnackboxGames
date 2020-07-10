@@ -232,25 +232,22 @@ const actions = {
 	startGame({commit, dispatch}, payload){
 		let gameId = state.userDetails.code
 
-
+		let timer = 4;
 		if(payload == "Hot Potato"){
-			
-
-			
-			let timer = 4;
-			for(let i = 0; i<6; i++){
-
-
-				let updates = {
+			var itr = Array(6).fill(0)
+			var interval = 1000; //one second
+			itr.forEach((itr, index) => {
+			  setTimeout(() => {
+			    let updates = {
 					gameState: payload,
 					timer: timer
 				}
 
 		    	firebaseDb.ref('games/' + gameId).update(updates)
 		    	timer --
+			  }, index * interval)
+			})
 
-
-	   		}
 		}
 	},
 }
