@@ -57,7 +57,20 @@
 
 <div v-else-if="gameDetails.game.gameState == 'Hot Potato'" class="row justify-center text-center q-mt-md">
     <div class="col-lg-5 col-xs-10">
-    	{{ gameDetails.game.timer }}
+    	<q-circular-progress v-if="gameDetails.game.timer >= 0"
+    	      show-value
+    	      class="text-white q-ma-md"
+    	      :value="(4-gameDetails.game.timer) * 25"
+    	      size="90px"
+    	      :thickness="0.2"
+    	      color="orange"
+    	      center-color="grey-8"
+    	      track-color="transparent"
+    	    >
+    	    	<div v-if="gameDetails.game.timer == 4"></div>
+    	    	<div v-else-if="gameDetails.game.timer == 0">Go!</div>
+    	    	<div v-else>{{gameDetails.game.timer}}</div>
+    	    </q-circular-progress>
 
     </div>
 </div>

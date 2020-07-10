@@ -229,18 +229,30 @@ const actions = {
 	firebaseUpdateHost({}, payload){
 		firebaseDb.ref('users/' + payload.userId).update(payload.updates)
 	},
-	startGame({commit}, payload){
+	startGame({commit, dispatch}, payload){
 		let gameId = state.userDetails.code
 
 
 		if(payload == "Hot Potato"){
-			let updates = {
-				gameState: payload,
-				timer: 3
-			}
-	    	firebaseDb.ref('games/' + gameId).update(updates)
+			
+
+			
+			let timer = 4;
+			for(let i = 0; i<6; i++){
+
+
+				let updates = {
+					gameState: payload,
+					timer: timer
+				}
+
+		    	firebaseDb.ref('games/' + gameId).update(updates)
+		    	timer --
+
+
+	   		}
 		}
-	}
+	},
 }
 const getters = {
 	users: state => {
