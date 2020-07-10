@@ -1,10 +1,10 @@
 <template>
 <div class="row justify-center full-width q-mt-md">
       <div class="col-lg-3 col-xs-10" >
-       	<div class="title-font">ROOM CODE</div>
+       	<div class="title-font" style="user-select: none;">ROOM CODE</div>
        			<q-input class="input-font" filled mask="AAAA" v-model="formData.code" placeholder="ENTER 4-LETTER CODE" lazy-rules
         		:rules="[ val => val && val.length == 4 || 'Please enter a 4 character room code']" ref="code"/>
-       	<div class="q-mt-md title-font" >NAME</div>
+       	<div class="q-mt-md title-font" style="user-select: none;">NAME</div>
        			<q-input class="input-font" mask="XXXXXXXXXX" filled v-model="formData.username" placeholder="ENTER YOUR NAME" 
        			lazy-rules  ref="username"
         		:rules="[ val => val && val.length > 0  || 'Please enter a username']"

@@ -26,7 +26,7 @@
 
       </q-toolbar>
     </q-header>
-
+        <!--
     <q-drawer hidden
       v-model="leftDrawerOpen"
       show-if-above
@@ -46,7 +46,7 @@
           v-bind="link"
         />
       </q-list>
-    </q-drawer>
+    </q-drawer>----->
 
     <q-page-container>
       <router-view />

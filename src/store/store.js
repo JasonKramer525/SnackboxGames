@@ -3,17 +3,24 @@ import { firebaseAuth, firebaseDb } from 'boot/firebase'
 
 const state = {
 	userDetails: {},
-	users: {}
+	users: {},
+	gameDetails: {}
 }
 const mutations = {
 	setUserDetails(state, payload) {
 		state.userDetails = payload
+	},
+	setGameDetails(state, payload) {
+		state.gameDetails = payload
 	},
 	addUser(state,payload){
 		Vue.set(state.users, payload.userId, payload.userDetails)
 	},
 	updateUser(state,payload){
 		Object.assign(state.users[payload.userId], payload.userDetails)
+	},
+	updateGame(state,payload){
+		state.gameDetails = payload
 	},
 	removeUser(state,payload){
 		Vue.delete(state.users, payload.userId, payload.userDetails)
@@ -45,13 +52,10 @@ const actions = {
 				host: gameHost,
 				game: "none"
 			})
-			firebaseDb.ref('games/' + payload.code + "/players/" + payload.username).set({
-					score: 0,
-					name: payload.username
-				})
 			if(gameHost){
 				firebaseDb.ref('games/' + payload.code).set({
-					host: payload.username
+					host: payload.username,
+					gameState: "lobby"
 				})
 			}
 			else {
@@ -86,8 +90,9 @@ const actions = {
 				firebaseDb.ref('users').on('value', snapshot => { 
 				    if(snapshot.hasChild(userId)){
 
-					firebaseDb.ref('users/' + userId).once('value', snapshot => { 
+						firebaseDb.ref('users/' + userId).once('value', snapshot => { 
 					    	let userDetails = snapshot.val()
+					    	let currentCode = userDetails.code
 					    	console.log("DETAILS: ", userDetails)
 					    	commit('setUserDetails', {
 					    		name: userDetails.name,
@@ -95,20 +100,53 @@ const actions = {
 					    		userId: userId,
 					    		host: userDetails.host
 					    	})
-					    
-					    }) 
+
+						    firebaseDb.ref('games/' + currentCode).once('value', snapshot => { 
+						    	let gameDetails = snapshot.val()
+						    	commit('setGameDetails', {
+						    		game: gameDetails
+						    	})
+						    })
+
+						    firebaseDb.ref('games').on('child_changed', snapshot => {
+								console.log("GAME SET: ", state.gameDetails)
+						    	let gameDetails = snapshot.val()
+						    	console.log(gameDetails)
+						    	commit('updateGame', {
+						    		game: gameDetails
+						    	})
+						    	console.log("GAME UPDATED: ", state.gameDetails)
+						    })
+
+					    })
+
 					}
 
 					else {
 						firebaseDb.ref('users/' + userId).once('child_added', snapshot => { 
 					    	let userDetails = snapshot.val()
-					    	console.log("DETAILS: ", userDetails)
+					    	let currentCode = userDetails.code
 					    	commit('setUserDetails', {
 					    		name: userDetails.name,
 					    		code: userDetails.code,
 					    		userId: userId,
 					    		host: userDetails.host
 					    	})
+
+					    	firebaseDb.ref('games/' + currentCode).once('value', snapshot => { 
+						    	let gameDetails = snapshot.val()
+						    	commit('setGameDetails', {
+						    		game: gameDetails
+						    	})
+						    })
+
+						    firebaseDb.ref('games').on('child_changed', snapshot => {
+						    	let gameDetails = snapshot.val()
+						    	commit('updateGame', {
+						    		game: gameDetails
+						    	})
+						    	console.log("GAME UPDATED: ", state.gameDetails)
+						    })
 					    
 					    }) 
 					}
@@ -152,7 +190,7 @@ const actions = {
 				userId,
 				userDetails
 			})
-		})
+		})		
 	},
 	logoutUser({dispatch}){
 		var user = firebaseAuth.currentUser;
@@ -191,6 +229,18 @@ const actions = {
 	firebaseUpdateHost({}, payload){
 		firebaseDb.ref('users/' + payload.userId).update(payload.updates)
 	},
+	startGame({commit}, payload){
+		let gameId = state.userDetails.code
+
+
+		if(payload == "Hot Potato"){
+			let updates = {
+				gameState: payload,
+				timer: 3
+			}
+	    	firebaseDb.ref('games/' + gameId).update(updates)
+		}
+	}
 }
 const getters = {
 	users: state => {
@@ -203,6 +253,9 @@ const getters = {
 		console.log(gameUsers)
 		return gameUsers
 	},
+	gameDetails: state => {
+		return state.gameDetails
+	}
 }
 
 export default {

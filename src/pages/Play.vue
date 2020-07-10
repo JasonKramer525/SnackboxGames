@@ -1,37 +1,37 @@
 <template>
-<div class="row justify-center text-center q-mt-md">
+<div v-if="gameDetails.game.gameState == 'lobby'" class="row justify-center text-center q-mt-md">
     <div class="col-lg-5 col-xs-10">
 		<div class="title-font" v-if="!userDetails.host" >Waiting for the host to start the game</div>
 		<div class="title-font" v-if="userDetails.host">You are the host.</div>
 		<div class="title-font">Room Code: <a style="color:#1976D2; font-size:40px"> {{userDetails.code}} </a> </div>
-		<div class="title-font q-mt-md">Current Players:    {{ countDown }}</div>
+		<div class="title-font q-mt-md">Current Players:    </div>
 
 		<div style="font-size: 20px" v-for="(user, key) in users">
-		  {{ user.name }} <a v-if="user.host == true"> (Host) </a>
+		  {{ user.name }}<a v-if="user.host == true"> (Host) </a>
 		</div>
 
 
-		<q-btn-dropdown ref="gameLabel" v-if="userDetails.host" size="18px" class="q-py-xs q-mt-md" color="primary" label="Select Game">
+		<q-btn-dropdown ref="gameLabel" v-if="userDetails.host" size="18px" class="q-py-xs q-mt-md" color="primary" :label="gameLabel">
 	      <q-list>
-	      	<q-item clickable v-close-popup @click="onItemClick()">
+	      	<q-item clickable v-close-popup @click="onItemClick('Hot Potato')">
 	          <q-item-section>
 	            <q-item-label>Hot Potato</q-item-label>
 	          </q-item-section>
 	        </q-item>
 
-	        <q-item clickable v-close-popup @click="onItemClick()">
+	        <q-item clickable v-close-popup @click="onItemClick('Headlines')">
 	          <q-item-section>
 	            <q-item-label>Headlines</q-item-label>
 	          </q-item-section>
 	        </q-item>
 
-	        <q-item clickable v-close-popup @click="onItemClick()">
+	        <q-item clickable v-close-popup @click="onItemClick('Crack The Code')">
 	          <q-item-section>
 	            <q-item-label>Crack The Code</q-item-label>
 	          </q-item-section>
 	        </q-item>
 
-	        <q-item clickable v-close-popup @click="onItemClick()">
+	        <q-item clickable v-close-popup @click="onItemClick('Bounce Back')">
 	          <q-item-section>
 	            <q-item-label>Bounce Back</q-item-label>
 	          </q-item-section>
@@ -46,32 +46,40 @@
 		      class="q-px-xl q-py-xs q-mt-md"
 		      color="primary"
 		      label="Start"
-		      @click=""
+		      @click="onStart()"
 		    	/>
 		          </div>
 		</div>
 
 	</div>
 </div>
+
+
+<div v-else-if="gameDetails.game.gameState == 'Hot Potato'" class="row justify-center text-center q-mt-md">
+    <div class="col-lg-5 col-xs-10">
+    	{{ gameDetails.game.timer }}
+
+    </div>
+</div>
+
 </template>
 
 
 <script>
-import {mapState, mapGetters} from 'vuex'
+import {mapState, mapGetters, mapActions} from 'vuex'
 
 export default {
 	computed: {
 		...mapState('store', ['messages', 'userDetails']),
-		...mapGetters('store', ['users'])
-	},
-	data(){
-		return {
-			showMessages: false
-		}
+		...mapGetters('store', ['users', 'gameDetails'])
 	},
 	methods: {
-	    onItemClick () {
-
+		...mapActions('store',['startGame']),
+	    onItemClick (x) {
+	    	this.gameLabel = x
+	    },
+	    onStart(){
+	    	this.startGame(this.gameLabel)
 	    },
 	    countDownTimer() {
             if(this.countDown > 0) {
@@ -84,7 +92,8 @@ export default {
 	},
 	data() {
         return {
-            countDown : 30
+            countDown: 30,
+            gameLabel: "Select Game"
         }
     },
     watch: {
