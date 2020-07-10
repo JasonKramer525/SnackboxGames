@@ -262,7 +262,8 @@ const actions = {
 				gameState: "Hot Potato",
 				players: gameUsers,
 				playerCount: playerCount,
-				timer: timer
+				timer: timer,
+				potato: "none"
 			}
 
 	    	firebaseDb.ref('games/' + gameId).update(updates)
@@ -272,7 +273,7 @@ const actions = {
 
 		setTimeout(() => {
             let randomPlayer = Math.floor(Math.random() * playerCount); 
-
+            console.log("UPDATED POTATO")
 			let updates = {
 				potato: gameUsers[randomPlayer] 
 			}
@@ -281,6 +282,41 @@ const actions = {
         }, 9000)
 		
 		
+	},
+	passPotato({commit}){
+		console.log("REPEAT")
+		let userChange = ""
+		firebaseDb.ref('games/' + state.userDetails.code).on('value', snapshot => { 
+			let gameData = snapshot.val()
+			let gameUsers = gameData.players
+			let users = []
+			let currentUser = 0;
+			let count = 0;
+			Object.keys(gameUsers).forEach(key => {
+				users.push(gameUsers[key])
+				if(gameUsers[key] == state.userDetails.name){
+					currentUser = count;
+				}
+				count ++;
+			})
+			console.log("ALL PLAYERS", users)
+
+			if(currentUser == gameData.playerCount - 1){
+				userChange = users[0]
+			}
+			else {
+				userChange = users[currentUser + 1]
+			}
+		})
+
+		let updates = {
+			potato: userChange
+		}
+		console.log("PASS")
+
+    	firebaseDb.ref('games/' + state.userDetails.code).update(updates)
+
+		console.log("exit", state.gameDetails.game)
 	}
 }
 const getters = {

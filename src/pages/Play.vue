@@ -59,12 +59,12 @@
     <div class="col-lg-5 col-xs-10">
     	<div class="title-font" style="font-size:50px;">Hot Potato</div>
 
-    	<div class="title-font" style="font-size:30px;" v-if="gameDetails.game.potato == userDetails.name">YOU HAVE THE POTATO!</div>
-    	<div class="title-font" style="font-size:30px;" v-if="gameDetails.game.potato != userDetails.name">{{gameDetails.game.potato}} HAS THE POTATO!</div>
+    	<div class="title-font" style="font-size:30px;" v-if="gameDetails.game.potato == userDetails.name && gameDetails.game.potato != 'none'">YOU HAVE THE POTATO!</div>
+    	<div class="title-font" style="font-size:30px;" v-if="gameDetails.game.potato != userDetails.name && gameDetails.game.potato != 'none'">{{gameDetails.game.potato}} HAS THE POTATO!</div>
 
-    	<div class="title-font" style="font-size:15px;" v-if="gameDetails.game.potato == userDetails.name">(Tap it to throw)</div>
+    	<div class="title-font" style="font-size:15px;" v-if="gameDetails.game.potato == userDetails.name && gameDetails.game.potato != 'none'">(Tap it to throw)</div>
 
-    	<q-img v-if="gameDetails.game.potato == userDetails.name"
+    	<q-img v-if="gameDetails.game.potato == userDetails.name && gameDetails.game.potato != 'none'"
     	      :src="url"
     	      style="height: 150px; max-width: 150px; transform:translateY(-15px)" @click="throwPotato()"
     	/><br>
@@ -107,7 +107,7 @@ export default {
 		...mapGetters('store', ['users', 'gameDetails'])
 	},
 	methods: {
-		...mapActions('store',['startGame']),
+		...mapActions('store',['startGame', 'passPotato']),
 	    onItemClick (x) {
 	    	this.gameLabel = x
 	    },
@@ -123,7 +123,7 @@ export default {
             }
         },
         throwPotato() {
-        	console.log("TEST")
+        	this.passPotato()
         }
 	},
 	data() {
