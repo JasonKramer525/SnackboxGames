@@ -311,7 +311,7 @@ const actions = {
 	potatoGameStart(){
 		var colors = ['#ffffff','#ffffff','#ffffff','#fff2f2','#ffe6e6','#ffe0e0','#ffd9d9','#ffcfcf',
 		'#ffc7c7','#ffbfbf','#ffb8b8','#ffb0b0','#ffa8a8','#ffa3a3','#ff9c9c','#ff9494','#ff8585','#ff7a7a',
-		'#ff7070','#ff6363','#ff5959','#ff5252','#ff4242','#ff3333','#ff2424','#ff0f0f','#ff0000']
+		'#ff7070','#ff6363','#ff5959','#ff5252','#ff4242','#ff3333','#ff2424','#ff0f0f','#ff0000',"#D3D3D3"]
 		var itr = Array(20).fill(0)
 		var counter = 0;
 		var interval = Math.floor(Math.random() * (800 - 500 + 1)) + 500;
@@ -323,6 +323,14 @@ const actions = {
 			}
 			counter++;
 	    	firebaseDb.ref('games/' + state.userDetails.code).update(updates)
+
+	    	if(index == 27){
+	    		let updates = {
+					gameState: "potatoLoss"
+				}
+
+	    		firebaseDb.ref('games/' + state.userDetails.code).update(updates)
+	    	}
 		  }, index * interval)
 		})
 	},

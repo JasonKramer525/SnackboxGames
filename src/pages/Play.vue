@@ -95,6 +95,11 @@
     </div>
 </div>
 
+<div v-else-if="gameDetails.game.gameState == 'potatoLoss'" class="row justify-center text-center q-mt-md">
+    <div class="col-lg-5 col-xs-10">
+    	<div class="title-font" style="font-size:50px;">{{ gameDetails.game.potato }} Lost!</div>
+ 	</div>
+</div>
 </template>
 
 
