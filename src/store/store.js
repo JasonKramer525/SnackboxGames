@@ -50,7 +50,7 @@ const actions = {
 				name: payload.username,
 				code: payload.code,
 				host: gameHost,
-				game: "none"
+				eliminated: "false"
 			})
 			if(gameHost){
 				firebaseDb.ref('games/' + payload.code).set({
@@ -230,26 +230,58 @@ const actions = {
 		firebaseDb.ref('users/' + payload.userId).update(payload.updates)
 	},
 	startGame({commit, dispatch}, payload){
-		let gameId = state.userDetails.code
-
-		let timer = 4;
 		if(payload == "Hot Potato"){
-			var itr = Array(6).fill(0)
-			var interval = 1000; //one second
-			itr.forEach((itr, index) => {
-			  setTimeout(() => {
-			    let updates = {
-					gameState: payload,
-					timer: timer
-				}
-
-		    	firebaseDb.ref('games/' + gameId).update(updates)
-		    	timer --
-			  }, index * interval)
-			})
-
+			dispatch('hotPotato')
 		}
 	},
+	hotPotato({commit, dispatch}){
+		let gameId = state.userDetails.code
+
+		let gameUsers = {}
+		let userNum = 0
+		Object.keys(state.users).forEach(key => {
+			if(state.users[key].code == state.userDetails.code){
+				if(state.users[key].eliminated == "false"){
+					console.log(state.users[key].eliminated)
+					gameUsers[userNum] = state.users[key].name
+					userNum ++;
+				}
+			}
+		})
+		console.log(gameUsers)
+
+		var playerCount = Object.keys(gameUsers).length;
+		//console.log("USERS IN GAME: ", count)
+
+		let timer = 6;
+		var itr = Array(9).fill(0)
+		var interval = 1000; //one second
+		itr.forEach((itr, index) => {
+		  setTimeout(() => {
+		    let updates = {
+				gameState: "Hot Potato",
+				players: gameUsers,
+				playerCount: playerCount,
+				timer: timer
+			}
+
+	    	firebaseDb.ref('games/' + gameId).update(updates)
+	    	timer --
+		  }, index * interval)
+		})
+
+		setTimeout(() => {
+            let randomPlayer = Math.floor(Math.random() * playerCount); 
+
+			let updates = {
+				potato: gameUsers[randomPlayer] 
+			}
+
+	    	firebaseDb.ref('games/' + gameId).update(updates)
+        }, 9000)
+		
+		
+	}
 }
 const getters = {
 	users: state => {

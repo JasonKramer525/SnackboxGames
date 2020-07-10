@@ -59,10 +59,15 @@
     <div class="col-lg-5 col-xs-10">
     	<div class="title-font" style="font-size:50px;">Hot Potato</div>
 
-    	<q-img
+    	<div class="title-font" style="font-size:30px;" v-if="gameDetails.game.potato == userDetails.name">YOU HAVE THE POTATO!</div>
+    	<div class="title-font" style="font-size:30px;" v-if="gameDetails.game.potato != userDetails.name">{{gameDetails.game.potato}} HAS THE POTATO!</div>
+
+    	<div class="title-font" style="font-size:15px;" v-if="gameDetails.game.potato == userDetails.name">(Tap it to throw)</div>
+
+    	<q-img v-if="gameDetails.game.potato == userDetails.name"
     	      :src="url"
-    	      style="height: 120px; max-width: 120px "
-    	/>
+    	      style="height: 150px; max-width: 150px; transform:translateY(-15px)" @click="throwPotato()"
+    	/><br>
 
     	<q-circular-progress v-if="gameDetails.game.timer >= 0"
     	      show-value
@@ -74,15 +79,15 @@
     	      center-color="grey-8"
     	      track-color="transparent"
     	    >
-    	    	<div v-if="gameDetails.game.timer > 4"></div>
-    	    	<div v-else-if="gameDetails.game.timer == 0">Go!</div>
+    	    	<div v-if="gameDetails.game.timer >= 4"></div>
+    	    	<div v-else-if="gameDetails.game.timer >= -1 && gameDetails.game.timer <= 0">Go!</div>
     	    	<div v-else>{{gameDetails.game.timer}}</div>
     	    </q-circular-progress>
 
     	    <div class="title-font q-mt-md">Players Remaining:    </div>
 
     	    <div style="font-size: 20px" v-for="(user, key) in users">
-    	      {{ user.name }} <q-img
+    	      {{ user.name }} <q-img v-if="gameDetails.game.potato == user.name"
     	      :src="url"
     	      style="height: 50px; max-width: 50px; transform:translateY(-8px)"
     	/></div>  
@@ -116,6 +121,9 @@ export default {
                     this.countDownTimer()
                 }, 1000)
             }
+        },
+        throwPotato() {
+        	console.log("TEST")
         }
 	},
 	data() {
