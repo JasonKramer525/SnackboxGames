@@ -28,6 +28,9 @@ const mutations = {
 	removeUser(state,payload){
 		Vue.delete(state.users, payload.userId, payload.userDetails)
 	},
+	updateColor(state,payload){
+		state.backgroundColor = payload	
+	}
 }
 const actions = {
 	playGame({}, payload){
@@ -58,7 +61,8 @@ const actions = {
 			if(gameHost){
 				firebaseDb.ref('games/' + payload.code).set({
 					host: payload.username,
-					gameState: "lobby"
+					gameState: "lobby",
+					backgroundColor: "#D3D3D3"
 				})
 			}
 			else {
@@ -85,6 +89,7 @@ const actions = {
 	handleAuthStateChanged({commit, dispatch, state}){
 		firebaseAuth.onAuthStateChanged(user => {
 			if (user) { 
+												console.log("NEW COLOR: ", state.backgroundColor)
 				this.$router.push('/play').catch(err => {})
 
 				let userId = firebaseAuth.currentUser.uid;
@@ -118,6 +123,10 @@ const actions = {
 						    	commit('updateGame', {
 						    		game: gameDetails
 						    	})
+						    	commit('updateColor', {
+						    		backgroundColor: gameDetails.backgroundColor
+						    	})
+								console.log("NEW COLOR: ", state.backgroundColor)
 						    	console.log("GAME UPDATED: ", state.gameDetails)
 						    })
 
@@ -147,6 +156,9 @@ const actions = {
 						    	let gameDetails = snapshot.val()
 						    	commit('updateGame', {
 						    		game: gameDetails
+						    	})
+						    	commit('updateColor', {
+						    		backgroundColor: gameDetails.backgroundColor
 						    	})
 						    	console.log("GAME UPDATED: ", state.gameDetails)
 						    })
@@ -282,17 +294,37 @@ const actions = {
 			}
 
 	    	firebaseDb.ref('games/' + gameId).update(updates)
+	    	dispatch('potatoGameStart')
+
         }, 7000)
 
 
         setTimeout(() => {
-			let updates = {
+			/*let updates = {
 				gameState: "lobby"
 			}
 
-	    	firebaseDb.ref('games/' + gameId).update(updates)
+	    	firebaseDb.ref('games/' + gameId).update(updates)*/
         }, 28000)
 		
+	},
+	potatoGameStart(){
+		var colors = ['#ffffff','#ffffff','#ffffff','#fff2f2','#ffe6e6','#ffe0e0','#ffd9d9','#ffcfcf',
+		'#ffc7c7','#ffbfbf','#ffb8b8','#ffb0b0','#ffa8a8','#ffa3a3','#ff9c9c','#ff9494','#ff8585','#ff7a7a',
+		'#ff7070','#ff6363','#ff5959','#ff5252','#ff4242','#ff3333','#ff2424','#ff0f0f','#ff0000']
+		var itr = Array(20).fill(0)
+		var counter = 0;
+		var interval = Math.floor(Math.random() * (800 - 500 + 1)) + 500;
+		colors.forEach((color, index) => {
+		  setTimeout(() => {
+		  	console.log(color)
+		   let updates = {
+				backgroundColor: color
+			}
+			counter++;
+	    	firebaseDb.ref('games/' + state.userDetails.code).update(updates)
+		  }, index * interval)
+		})
 	},
 	passPotato({commit}){
 		console.log("REPEAT")
