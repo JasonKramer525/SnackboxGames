@@ -13,6 +13,12 @@
 
 		<q-btn-dropdown ref="gameLabel" v-if="userDetails.host" size="18px" class="q-py-xs q-mt-md" color="primary" :label="gameLabel">
 	      <q-list>
+	      	<q-item clickable v-close-popup @click="onItemClick('Codenames')">
+	          <q-item-section>
+	            <q-item-label>Codenames</q-item-label>
+	          </q-item-section>
+	        </q-item>
+
 	      	<q-item clickable v-close-popup @click="onItemClick('Hot Potato')">
 	          <q-item-section>
 	            <q-item-label>Hot Potato</q-item-label>
@@ -116,6 +122,7 @@
 
 <div v-else-if="gameDetails.game.gameState == 'potatoWin'" class="row justify-center text-center q-mt-md">
     <div class="col-lg-5 col-xs-10">
+    	<div class="title-font" style="font-size:50px;">Hot Potato</div>
     	<div class="title-font" style="font-size:50px;" v-for="(user, key) in users">
     	     <div class="absolute-center" v-if="user.eliminated == 'false'"> {{ user.name }} WINS!</div><br><br></div>
     	     <q-btn v-if="userDetails.host == true"
@@ -125,6 +132,54 @@
 		      label="Main Menu"
 		      @click="quitPotatoGame()"
 		    	/>
+	</div>
+</div>
+
+<!------- Codenames ------->
+<div v-else-if="gameDetails.game.gameState == 'codenamesLobby'" class="row justify-center text-center q-mt-md">
+    <div class="col-lg-5 col-xs-10">
+    	<div class="title-font" style="font-size:50px;">Codenames</div>
+		<div class="title-font" style="font-size:50px; color:#1976d2">Blue Team</div>
+		<div class="title-font" style="font-size:40px;" v-for="(user, key) in users" v-if="user.team =='blue'">
+						      <q-icon v-if="user.spymaster == 'true'" name="star"/> {{user.name}}
+		</div>
+
+		<div class="title-font" style="font-size:50px; color:#c10015">Red Team</div>
+		<div class="title-font" style="font-size:40px;" v-for="(user, key) in users" v-if="user.team =='red'">
+			      <q-icon v-if="user.spymaster == 'true'" name="star"/> {{user.name}}
+		</div>
+		
+		<q-btn v-if="userDetails.host == true" class="q-px-md q-py-xs q-ma-sm" color="primary" label="Start" size="md"  @click="startCodenames()"/>
+    	<q-btn v-if="userDetails.host == true" class="q-px-md q-py-xs q-ma-sm" color="primary" label="Shuffle" size="md"  @click="shuffleTeams()"/>
+
+
+
+	</div>
+</div>
+
+<div v-else-if="gameDetails.game.gameState == 'codenames'" class="row justify-center text-center q-mt-md">
+    <div class="col-lg-5 col-xs-12">
+    	<div class="title-font" style="font-size:50px;">Codenames</div>
+    	    <q-btn class="q-ma-sm" outline color="primary" label="Dinosaur" size="md"/>
+    	    <q-btn class="q-ma-sm" outline color="primary" label="Dinosaur" size="md"/>
+    	    <q-btn class="q-ma-sm" outline color="primary" label="Dinosaur" size="md"/>
+    	    <q-btn class="q-ma-sm" outline color="primary" label="Dinosaur" size="md"/>
+    	    <q-btn class="q-ma-sm" outline color="primary" label="Dinosaur" size="md"/>
+    	    <q-btn class="q-ma-sm" outline color="primary" label="Dinosaur" size="md"/>
+    	    <q-btn class="q-ma-sm" outline color="primary" label="Dinosaur" size="md"/>
+    	    <q-btn class="q-ma-sm" outline color="primary" label="Dinosaur" size="md"/>
+    	    <q-btn class="q-ma-sm" outline color="primary" label="Dinosaur" size="md"/>
+    	    <q-btn class="q-ma-sm" outline color="primary" label="Dinosaur" size="md"/>
+    	    <q-btn class="q-ma-sm" outline color="primary" label="Dinosaur" size="md"/>
+    	    <q-btn class="q-ma-sm" outline color="primary" label="Dinosaur" size="md"/>
+    	    <q-btn class="q-ma-sm" outline color="primary" label="Dinosaur" size="md"/>
+    	   
+    	   
+
+		<div class="title-font" style="font-size:50px; color:#1976d2">Blue Team</div>
+
+		<div class="title-font" style="font-size:50px; color:#c10015">Red Team</div>
+
 	</div>
 </div>
 </template>
@@ -159,6 +214,12 @@ export default {
         },
         quitPotatoGame() {
         	return this.quitPotato()
+        },
+        shuffleTeams() {
+	    	this.startGame("Codenames")
+        },
+        startCodenames(){
+        	console.log("START")
         }
 	},
 	data() {

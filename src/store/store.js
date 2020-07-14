@@ -56,7 +56,9 @@ const actions = {
 				name: payload.username,
 				code: payload.code,
 				host: gameHost,
-				eliminated: "false"
+				eliminated: "false",
+				team: "red",
+				spymaster: "false"
 			})
 			if(gameHost){
 				firebaseDb.ref('games/' + payload.code).set({
@@ -248,6 +250,111 @@ const actions = {
 		if(payload == "Hot Potato"){
 			dispatch('hotPotato')
 		}
+		else if(payload == "Codenames"){
+			dispatch('codenames')
+		}
+	},
+	codenames({commit, dispatch}){
+		let gameId = state.userDetails.code
+
+		let gameUsers = {}
+		let userNum = 0
+		let redTeam = 0
+		let blueTeam = 0
+		let updates;
+
+		Object.keys(state.users).forEach(key => {
+			if(state.users[key].code == state.userDetails.code){
+				gameUsers[userNum] = state.users[key].name
+				userNum ++;
+			}
+		})
+
+		let blueMax = Math.floor(userNum/2)
+		let redMax = userNum - blueMax
+
+		console.log(blueMax)
+		let team = ""
+
+		let redSpymaster = ""
+		let blueSpymaster = ""
+
+		Object.keys(state.users).forEach(key => {
+			if(state.users[key].code == state.userDetails.code){
+				console.log(key)
+				let randomVal = Math.floor(Math.random() * 2); 
+
+				if(randomVal == 0){
+					if(blueTeam < blueMax){
+						team = "blue";
+					}
+					else {
+						team = "red";
+					}
+				}
+				else {
+					if (redTeam < redMax){
+						team = "red"
+					}
+					else {
+						team = "blue"
+					}
+	
+
+				}
+
+				randomVal = Math.floor(Math.random() * 2); 
+
+
+				if(team == "red"){
+					updates = {
+						team: "red",
+						spymaster: "false"
+					}
+					firebaseDb.ref('users/' + key).update(updates)
+					if(redTeam == 0){
+						redSpymaster = key
+					}
+
+					if(randomVal == 0){
+						redSpymaster = key
+					}
+
+					redTeam ++;
+				}
+				else {
+					updates = {
+						team: "blue",
+						spymaster: "false"
+					}
+					firebaseDb.ref('users/' + key).update(updates)
+
+					if(blueTeam == 0){
+						blueSpymaster = key
+					}
+
+					if(randomVal == 0){
+						blueSpymaster = key
+					}
+
+					blueTeam ++;
+				}
+			}	
+		})
+
+		updates = {
+			spymaster: "true"
+		}
+
+		firebaseDb.ref('users/' + blueSpymaster).update(updates)
+		firebaseDb.ref('users/' + redSpymaster).update(updates)
+
+		updates = {
+				gameState: "codenamesLobby" }
+
+		firebaseDb.ref('games/' + gameId).update(updates)
+
+
 	},
 	hotPotato({commit, dispatch}){
 		let gameId = state.userDetails.code
@@ -266,9 +373,10 @@ const actions = {
 		console.log(gameUsers)
 
 		var playerCount = Object.keys(gameUsers).length;
+
 		//console.log("USERS IN GAME: ", count)
 
-		let timer = 6;
+		let timer = 5;
 		var itr = Array(8).fill(0)
 		var interval = 1000; //one second
 		itr.forEach((itr, index) => {
